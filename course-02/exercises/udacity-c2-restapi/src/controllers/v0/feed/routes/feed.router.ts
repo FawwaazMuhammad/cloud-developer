@@ -18,6 +18,29 @@ router.get('/', async (req: Request, res: Response) => {
 
 //@TODO
 //Add an endpoint to GET a specific resource by Primary Key
+router.get('/:name', async (req: Request, res: Response) => {
+    let { name } = req.params;
+    const { Op } = require("sequelize");
+
+      if ( !name ) {
+        return res.status(400)
+                  .send(`name is required`);
+      }
+      const items = await FeedItem.findAll({
+        where: {
+          caption:{
+            [Op.eq]: name
+          }
+        }
+      });
+    //const items = await FeedItem.findAndCountAll({order: [['id', 'DESC']]});
+    // items.rows.map((item) => {
+    //         if(item.url) {
+    //             item.url = AWS.getGetSignedUrl(item.url);
+    //         }
+    // });
+    res.send(items);
+});
 
 // update a specific resource
 router.patch('/:id', 
